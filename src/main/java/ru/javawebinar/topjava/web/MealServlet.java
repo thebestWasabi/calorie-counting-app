@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.web;
 
-import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.repository.ImMemoryMealRepository;
+import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalTime;
-import java.util.List;
 
 /**
  * @author Maxim Khamzin
@@ -18,12 +16,16 @@ import java.util.List;
  */
 public class MealServlet extends HttpServlet {
 
+    private MealRepository mealRepository;
+
+    @Override
+    public void init() throws ServletException {
+        mealRepository = new ImMemoryMealRepository();
+    }
+
     @Override
     protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        final List<Meal> meals = MealsUtil.MEALS;
-        final List<MealTo> mealsDto = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, 2000);
-
-        req.setAttribute("meals", mealsDto);
+        req.setAttribute("meals", MealsUtil.toTos(mealRepository.getAll(), MealsUtil.DEFAULT_CALORIES));
         req.getRequestDispatcher("/meals.jsp").forward(req, resp);
     }
 }
