@@ -5,6 +5,8 @@ target/
 
 patch
 
+log
+
 ### IntelliJ IDEA ###
 .idea
 .idea/modules.xml
