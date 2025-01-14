@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UserMealsUtil {
+
     public static void main(String[] args) {
         List<UserMeal> meals = Arrays.asList(
                 new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500),
@@ -26,7 +27,7 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
-        List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(8, 0), LocalTime.of(16, 0), 2000);
+        List<UserMealWithExcess> mealsTo = filteredByCyclesV2(meals, LocalTime.of(8, 0), LocalTime.of(16, 0), 2000);
         mealsTo.forEach(System.out::println);
 
         System.out.println();
@@ -48,6 +49,19 @@ public class UserMealsUtil {
             }
         }
 
+        return result;
+    }
+
+    public static List<UserMealWithExcess> filteredByCyclesV2(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        final Map<LocalDate, Integer> caloriesSumByDay = new HashMap<>();
+        meals.forEach(meal -> caloriesSumByDay.merge(meal.getDate(), meal.getCalories(), Integer::sum));
+
+        final List<UserMealWithExcess> result = new ArrayList<>();
+        meals.forEach(meal -> {
+            if (TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime)) {
+                result.add(create(meal, caloriesSumByDay.get(meal.getDate()) > caloriesPerDay));
+            }
+        });
         return result;
     }
 
