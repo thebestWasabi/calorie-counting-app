@@ -34,7 +34,7 @@
     <hr>
     <h2>${param.cmd == 'create' ? 'Create meal' : 'Edit meal'}</h2>
 
-    <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
+<%--    <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>--%>
     <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>

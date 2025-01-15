@@ -31,7 +31,9 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException
+    {
         log.info("forward to meals ");
 
         final String cmd = request.getParameter("cmd");
@@ -41,10 +43,10 @@ public class MealServlet extends HttpServlet {
                 create(request, response);
                 break;
             case "update":
-                update(request);
+                update(request, response);
                 break;
             case "delete":
-                delete(request);
+                delete(request, response);
                 break;
             case "all":
             default:
@@ -54,7 +56,9 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException
+    {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
 
@@ -84,10 +88,19 @@ public class MealServlet extends HttpServlet {
         request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
     }
 
-    private void update(final HttpServletRequest request) {
+    private void update(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException
+    {
+        final Meal meal = mealRepository.get(getId(request));
+        request.setAttribute("meal", meal);
+        request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
     }
 
-    private void delete(final HttpServletRequest request) {
+    private void delete(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException
+    {
+        mealRepository.delete(getId(request));
+        response.sendRedirect("meals");
     }
 
     private int getId(final HttpServletRequest request) {
