@@ -1,5 +1,8 @@
 package ru.javawebinar.topjava.web;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.ImMemoryMealRepository;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -9,12 +12,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 
 /**
  * @author Maxim Khamzin
  * @link <a href="https://mkcoder.net">mkcoder.net</a>
  */
 public class MealServlet extends HttpServlet {
+    private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
 
     private MealRepository mealRepository;
 
@@ -24,8 +31,67 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("meals", MealsUtil.toTos(mealRepository.getAll(), MealsUtil.DEFAULT_CALORIES));
-        req.getRequestDispatcher("/meals.jsp").forward(req, resp);
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+        log.info("forward to meals ");
+
+        final String cmd = request.getParameter("cmd");
+
+        switch (cmd == null ? "all" : cmd) {
+            case "create":
+                create(request, response);
+                break;
+            case "update":
+                update(request);
+                break;
+            case "delete":
+                delete(request);
+                break;
+            case "all":
+            default:
+                getAll(request, response);
+                break;
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+        String id = request.getParameter("id");
+
+        Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
+                LocalDateTime.parse(request.getParameter("dateTime")),
+                request.getParameter("description"),
+                Integer.parseInt(request.getParameter("calories")));
+
+        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        mealRepository.save(meal);
+        response.sendRedirect("meals");
+    }
+
+    private void getAll(final HttpServletRequest request, final HttpServletResponse response)
+            throws IOException, ServletException
+    {
+        log.info("getAll");
+        request.setAttribute("meals", MealsUtil.toTos(mealRepository.getAll(), MealsUtil.DEFAULT_CALORIES));
+        request.getRequestDispatcher("/meals.jsp").forward(request, response);
+    }
+
+    private void create(final HttpServletRequest request, final HttpServletResponse response)
+            throws ServletException, IOException
+    {
+        final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
+        request.setAttribute("meal", meal);
+        request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+    }
+
+    private void update(final HttpServletRequest request) {
+    }
+
+    private void delete(final HttpServletRequest request) {
+    }
+
+    private int getId(final HttpServletRequest request) {
+        final String paramId = Objects.requireNonNull(request.getParameter("id"));
+        return Integer.parseInt(paramId);
     }
 }

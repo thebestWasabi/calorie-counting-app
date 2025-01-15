@@ -16,11 +16,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ImMemoryMealRepository implements MealRepository {
 
     private final Map<Integer, Meal> meals = new ConcurrentHashMap<>();
-    private final static AtomicInteger counter = new AtomicInteger();
+    private final AtomicInteger counter = new AtomicInteger(0);
 
     {
         for (final Meal meal : MealsUtil.MEALS) {
-            meals.put(meal.getId(), meal);
+            save(meal);
         }
     }
 

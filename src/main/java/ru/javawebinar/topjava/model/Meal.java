@@ -24,6 +24,10 @@ public class Meal {
         this(null, dateTime, description, calories);
     }
 
+    public boolean isNew() {
+        return id == null;
+    }
+
     public Integer getId() {
         return id;
     }
