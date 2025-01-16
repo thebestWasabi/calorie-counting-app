@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.inmemory;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -64,8 +65,8 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Collection<Meal> getAll(final int userId) {
         final Map<Integer, Meal> meals = repository.get(userId);
-        return meals.values().stream()
-                .sorted(Comparator.comparing(Meal::getDate).reversed())
+        return CollectionUtils.isEmpty(meals) ? Collections.emptyList() : meals.values().stream()
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 }
