@@ -43,12 +43,7 @@ public class MealTo {
 
     @Override
     public String toString() {
-        return "MealTo{" +
-                "id=" + id +
-                ", dateTime=" + dateTime +
-                ", description='" + description + '\'' +
-                ", calories=" + calories +
-                ", excess=" + excess +
-                '}';
+        return String.format("MealTo{id=%d, dateTime=%s, description='%s', calories=%d, excess=%s}",
+                id, dateTime, description, calories, excess);
     }
 }
