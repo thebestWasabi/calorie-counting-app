@@ -14,7 +14,7 @@ import ru.javawebinar.topjava.model.Meal;
 import java.util.List;
 
 import static ru.javawebinar.topjava.MealTestData.MEAL_ID1;
-import static ru.javawebinar.topjava.MealTestData.assertMatch;
+import static ru.javawebinar.topjava.MealTestData.MEAL_MATCHER;
 import static ru.javawebinar.topjava.MealTestData.meal1;
 import static ru.javawebinar.topjava.MealTestData.meal2;
 import static ru.javawebinar.topjava.MealTestData.meal3;
@@ -49,13 +49,13 @@ public class MealServiceTest {
     @Test
     public void get() {
         final Meal meal = mealService.get(MEAL_ID1, USER_ID);
-        assertMatch(meal, meal1);
+        MEAL_MATCHER.assertMatch(meal, meal1);
     }
 
     @Test
     public void getAll() {
         final List<Meal> all = mealService.getAll(USER_ID);
-        assertMatch(all, meal7, meal6, meal5, meal4, meal3, meal2, meal1);
+        MEAL_MATCHER.assertMatch(all, meal7, meal6, meal5, meal4, meal3, meal2, meal1);
     }
 
     @Test
@@ -68,8 +68,8 @@ public class MealServiceTest {
         final Integer newId = created.getId();
         final Meal newMeal = MealTestData.getNew();
         newMeal.setId(newId);
-        assertMatch(created, newMeal);
-        assertMatch(mealService.get(newId, USER_ID), newMeal);
+        MEAL_MATCHER.assertMatch(created, newMeal);
+        MEAL_MATCHER.assertMatch(mealService.get(newId, USER_ID), newMeal);
     }
 
     @Test

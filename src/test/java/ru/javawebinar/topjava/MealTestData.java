@@ -15,6 +15,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class MealTestData {
 
+    public static final MatcherFactory.Matcher<Meal> MEAL_MATCHER = MatcherFactory.usingIgnoringFieldsComparator();
+
     public static final int MEAL_ID1 = AbstractBaseEntity.START_SEQ + 3;
     public static final int MEAL_ID2 = AbstractBaseEntity.START_SEQ + 4;
     public static final int MEAL_ID3 = AbstractBaseEntity.START_SEQ + 5;
@@ -34,19 +36,6 @@ public class MealTestData {
     public static final Meal meal7 = new Meal(MEAL_ID7, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0, 0), "Ужин", 510);
     public static final Meal meal8 = new Meal(MEAL_ID8, LocalDateTime.of(2020, Month.JANUARY, 31, 14, 0, 0), "Админ ланч", 510);
     public static final Meal meal9 = new Meal(MEAL_ID9, LocalDateTime.of(2020, Month.JANUARY, 31, 21, 0, 0), "Админ ужин", 1500);
-
-
-    public static void assertMatch(Meal actual, Meal expected) {
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-    }
-
-    public static void assertMatch(Iterable<Meal> actual, Meal... expected) {
-        assertMatch(actual, Arrays.asList(expected));
-    }
-
-    public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
-        assertThat(actual).usingRecursiveFieldByFieldElementComparator().isEqualTo(expected);
-    }
 
     public static Meal getNew() {
         return new Meal(null, LocalDateTime.of(2025, Month.JANUARY, 5, 11, 0, 0), "Новая еда", 480);
